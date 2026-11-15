@@ -11,8 +11,8 @@
 	<groupId>com.clinica</groupId>
 	<artifactId>VitalisSV</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>VitalisSV</name>
+	<description>Sistema de agenda de citas médicas para una clínica u hospital</description>
 	<url/>
 	<licenses>
 		<license/>
