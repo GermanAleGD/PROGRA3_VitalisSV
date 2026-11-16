@@ -74,4 +74,9 @@ public class CitaService {
         cita.setEstado(EstadoCita.CANCELADA);
         return citaRepository.save(cita);
     }
+
+    @Transactional(readOnly = true)
+    public List<Cita> listar() {
+        return citaRepository.findAll();
+    }
 }
