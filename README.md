@@ -1,5 +1,7 @@
 # VitalisSV
 
+[![CI](https://github.com/GermanAleGD/PROGRA3_VitalisSV/actions/workflows/ci.yml/badge.svg)](https://github.com/GermanAleGD/PROGRA3_VitalisSV/actions/workflows/ci.yml)
+
 Sistema de agenda de citas médicas para una clínica u hospital. API REST en Java que permite agendar y cancelar citas, evitando choques de horario y respetando la disponibilidad de cada médico.
 
 > Proyecto académico con datos ficticios. No usar con datos reales de pacientes sin antes implementar autenticación y cumplir la normativa de datos de salud.
