@@ -36,3 +36,6 @@ Al momendo de compilar el programa si bien es tardado (Al menos en mi maquina) d
 
 ## No cubierto aún
 La consulta de solapamiento no se ha probado contra MySQL real con pruebas automáticas (las pruebas unitarias simulan los repositorios).
+
+## Integración continua
+En cada push a main, GitHub Actions levanta un servidor MySQL 8.0, compila el proyecto y ejecuta todas las pruebas (unitarias y de integración). Última ejecución verificada: exitosa.
