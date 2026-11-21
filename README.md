@@ -2,20 +2,20 @@
 
 [![CI](https://github.com/GermanAleGD/PROGRA3_VitalisSV/actions/workflows/ci.yml/badge.svg)](https://github.com/GermanAleGD/PROGRA3_VitalisSV/actions/workflows/ci.yml)
 
-Sistema de agenda de citas médicas para una clínica u hospital. API REST en Java que permite agendar y cancelar citas, evitando choques de horario y respetando la disponibilidad de cada médico.
+Sistema de agenda de citas médicas para una clínica u hospital. API REST en Java que permite agendar, reprogramar y cancelar citas, evitando choques de horario y respetando la disponibilidad de cada médico.
 
 > Proyecto académico con datos ficticios. No usar con datos reales de pacientes sin antes implementar autenticación y cumplir la normativa de datos de salud.
 
-## Funcionalidades actuales
+## Funcionalidades
 
-- Consulta de médicos y pacientes
 - Agendar citas validando: fechas coherentes, que no sean en el pasado, que el médico atienda en ese horario y que no choquen con otra cita
-- Cancelar citas (el horario queda libre)
-- Listado de citas
+- Reprogramar y cancelar citas (al cancelar, el horario queda libre)
+- Agenda de un médico por día e historial de citas de un paciente
+- Alta, consulta y actualización de pacientes, médicos y especialidades
 
 ## Tecnologías
 
-Java 21, Spring Boot, Spring Data JPA (Hibernate), MySQL 8, Flyway, Maven (wrapper incluido), JUnit 5 y Mockito.
+Java 21, Spring Boot 4.1, Spring Data JPA (Hibernate), MySQL 8, Flyway, Maven (wrapper incluido), JUnit 5, Mockito y GitHub Actions.
 
 ## Requisitos
 
@@ -40,27 +40,45 @@ En Windows, ejecuta los comandos desde Git Bash. La API queda en http://localhos
 
 Si tu MySQL usa otras credenciales, define las variables de entorno DB_URL, DB_USER y DB_PASSWORD.
 
+## Endpoints principales
+
+| Método y ruta | Qué hace |
+|---|---|
+| POST /api/citas | Agenda una cita |
+| PATCH /api/citas/{id}/reprogramar | Mueve una cita a otra franja |
+| PATCH /api/citas/{id}/cancelar | Cancela una cita |
+| GET /api/citas | Lista las citas |
+| GET /api/medicos/{id}/citas?fecha=AAAA-MM-DD | Agenda de un médico (sin canceladas) |
+| GET /api/pacientes/{id}/citas | Historial de un paciente |
+| GET, POST /api/pacientes y GET, PUT /api/pacientes/{id} | Gestión de pacientes |
+| GET, POST /api/medicos y GET, PUT /api/medicos/{id} | Gestión de médicos |
+| GET, POST /api/especialidades | Gestión de especialidades |
+
 ## Probar la API
+
+Con la aplicación corriendo, el script scripts/probar-api.sh ejecuta 8 escenarios de agendado y muestra el código HTTP esperado y el obtenido:
+
+bash
+./scripts/probar-api.sh 2026-12-02
+
+
+Usa una fecha futura entre lunes y viernes (el médico de ejemplo atiende de 8:00 a 12:00). También puedes probar a mano:
 
 bash
 curl http://localhost:8080/api/medicos
-curl http://localhost:8080/api/pacientes
 
 curl -X POST http://localhost:8080/api/citas \
   -H "Content-Type: application/json" \
-  -d '{"pacienteId":1,"medicoId":1,"inicio":"2026-11-23T10:00:00","fin":"2026-11-23T10:30:00","motivo":"Control general"}'
-
-curl -X PATCH http://localhost:8080/api/citas/1/cancelar
-curl http://localhost:8080/api/citas
+  -d '{"pacienteId":1,"medicoId":1,"inicio":"2026-12-03T10:00:00","fin":"2026-12-03T10:30:00","motivo":"Control general"}'
 
 
-Ajusta la fecha a un día futuro en que el médico atienda (Ana: lunes a viernes de 8:00 a 12:00).
-
-## Pruebas
+## Pruebas automáticas
 
 bash
-./mvnw test -Dtest=CitaServiceTest
+./mvnw verify
 
+
+Ejecuta las pruebas unitarias y las de integración. Las de integración usan MySQL real, así que debe estar encendido con la base creada.
 
 ## Documentación
 
@@ -77,14 +95,21 @@ src/main/java/com/clinica/VitalisSV/
 ├── repository/   Acceso a datos
 ├── model/        Entidades JPA
 ├── dto/          Datos de entrada y salida de la API
-├── exception/    Errores de negocio
+├── exception/    Errores de negocio y respuestas HTTP
 └── config/       Configuración
 src/main/resources/db/migration/   Scripts de Flyway
 db/                                Script de creación de la base
+scripts/                           Script de pruebas manuales de la API
 docs/                              Documentación del proyecto
 
 
 ## Limitaciones conocidas
 
-- La API está abierta, sin autenticación (configuración temporal de desarrollo).
+- La API está abierta, sin autenticación ni roles (configuración temporal de desarrollo).
+- Los horarios de atención solo se cargan desde la migración de datos de prueba. Un médico nuevo no puede recibir citas hasta que tenga horarios.
+- No hay baja de pacientes ni de médicos.
 - Dos citas agendadas exactamente al mismo tiempo con el mismo médico podrían pasar la validación a la vez.
+
+## Trabajo futuro
+
+Autenticación con roles, gestión de horarios de atención desde la API, baja lógica de pacientes y médicos, y bloqueo a nivel de base de datos para la concurrencia.
