@@ -67,6 +67,21 @@ Se agregó la operación PATCH /api/citas/{id}/reprogramar, que mueve una cita a
 | Reprogramar a franja ocupada por otra cita (10:15-10:45) | 409 | 409 | Aprobado |
 | Reprogramar una cita cancelada | 409 | 409 | Aprobado |
 
+## Agenda por médico e historial por paciente
+Se agregaron GET /api/medicos/{id}/citas?fecha=AAAA-MM-DD (agenda del médico, ordenada por hora y sin citas canceladas) y GET /api/pacientes/{id}/citas (historial del paciente, de la más reciente a la más antigua, con las canceladas incluidas).
+
+*Pruebas unitarias nuevas:* 5 (agenda de un día, agenda sin fecha, médico inexistente, historial y paciente inexistente), sin fallos.
+
+*Pruebas manuales* (fecha: 20-11-2026):
+
+| Escenario | Esperado | Obtenido | Resultado |
+|---|---|---|---|
+| Agenda del médico en un día: muestra las citas activas y omite las canceladas | Lista correcta | Lista correcta | Aprobado |
+| Historial del paciente: incluye las canceladas | Lista correcta | Lista correcta | Aprobado |
+| Médico inexistente | 404 | 404 | Aprobado |
+| Paciente inexistente | 404 | 404 | Aprobado |
+| Fecha con formato inválido (fecha=abc) | 400 | 400 | Aprobado |
+
 ## Conclusiones
 - Se cumplieron los objetivos específicos 2 y 3: la API permite agendar, cancelar y listar citas, y la regla rechaza las que quedan fuera del horario del médico o se solapan con otra.
 - Las pruebas unitarias (8), las de integración contra MySQL (7) y las manuales de la API (8) dieron el resultado esperado, y la integración continua las ejecuta en cada push.
