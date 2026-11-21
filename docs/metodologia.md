@@ -40,3 +40,8 @@ Dos citas se solapan si inicio_existente < fin_nueva y fin_existente > inicio_nu
 ## Limitaciones conocidas
 - *Concurrencia:* la validación de choques se hace antes de guardar. Si dos peticiones llegan al mismo tiempo para el mismo médico, ambas podrían pasar. Mejora futura: bloqueo a nivel de base de datos.
 - *Seguridad:* la API está abierta temporalmente. Se reemplazará por autenticación con roles antes de usar datos reales.
+
+## Alcance final de la entrega
+*Incluido:* agendar, reprogramar y cancelar citas con validación de choques y de horario; agenda por médico e historial por paciente; alta y actualización de pacientes, médicos y especialidades; pruebas unitarias y de integración; integración continua.
+
+*Fuera del alcance (trabajo futuro):* autenticación con roles, gestión de horarios de atención desde la API y baja lógica de pacientes y médicos. Los horarios de atención solo se cargan desde la migración de datos de prueba.
