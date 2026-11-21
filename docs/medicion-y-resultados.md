@@ -52,6 +52,21 @@ Fecha de la prueba: 20-11-2026
 ## Integración continua
 En cada push a main, GitHub Actions levanta un servidor MySQL 8.0, compila el proyecto y ejecuta todas las pruebas (unitarias y de integración). Última ejecución verificada: exitosa.
 
+## Reprogramación de citas
+Se agregó la operación PATCH /api/citas/{id}/reprogramar, que mueve una cita a otra franja del mismo médico con las mismas reglas que al agendar. La consulta de choques ignora la propia cita, para que no choque consigo misma. Solo se reprograman citas pendientes o confirmadas.
+
+*Pruebas unitarias nuevas:* 5 (reprogramación válida, cita cancelada, cita completada, cita inexistente, fuera de horario y choque con otra cita), sin fallos. Las 8 pruebas anteriores siguen pasando tras refactorizar el servicio.
+
+*Pruebas manuales* (fecha: 20-11-2026):
+
+| Escenario | Esperado | Obtenido | Resultado |
+|---|---|---|---|
+| Reprogramar a 9:15-9:45 (solapa con su propia franja) | 200 | 200 | Aprobado |
+| Fuera de horario (13:00-13:30) | 409 | 409 | Aprobado |
+| Datos incompletos (sin fin) | 400 | 400 | Aprobado |
+| Reprogramar a franja ocupada por otra cita (10:15-10:45) | 409 | 409 | Aprobado |
+| Reprogramar una cita cancelada | 409 | 409 | Aprobado |
+
 ## Conclusiones
 - Se cumplieron los objetivos específicos 2 y 3: la API permite agendar, cancelar y listar citas, y la regla rechaza las que quedan fuera del horario del médico o se solapan con otra.
 - Las pruebas unitarias (8), las de integración contra MySQL (7) y las manuales de la API (8) dieron el resultado esperado, y la integración continua las ejecuta en cada push.

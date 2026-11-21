@@ -18,6 +18,10 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
     boolean existsByMedicoIdAndEstadoNotAndInicioLessThanAndFinGreaterThan(
             Long medicoId, EstadoCita estado, LocalDateTime fin, LocalDateTime inicio);
 
+    /** Igual que la anterior, pero ignorando una cita concreta (para reprogramar). */
+    boolean existsByMedicoIdAndIdNotAndEstadoNotAndInicioLessThanAndFinGreaterThan(
+            Long medicoId, Long citaId, EstadoCita estado, LocalDateTime fin, LocalDateTime inicio);
+
     @Override
     @EntityGraph(attributePaths = {"paciente", "medico"})
     Optional<Cita> findById(Long id);

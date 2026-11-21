@@ -2,6 +2,7 @@ package com.clinica.VitalisSV.controller;
 
 import com.clinica.VitalisSV.dto.AgendarCitaRequest;
 import com.clinica.VitalisSV.dto.CitaResponse;
+import com.clinica.VitalisSV.dto.ReprogramarCitaRequest;
 import com.clinica.VitalisSV.model.Cita;
 import com.clinica.VitalisSV.service.CitaService;
 import jakarta.validation.Valid;
@@ -24,6 +25,12 @@ public class CitaController {
         Cita cita = citaService.agendar(
                 req.pacienteId(), req.medicoId(), req.inicio(), req.fin(), req.motivo());
         return CitaResponse.from(cita);
+    }
+
+    @PatchMapping("/{id}/reprogramar")
+    public CitaResponse reprogramar(@PathVariable Long id,
+                                    @Valid @RequestBody ReprogramarCitaRequest req) {
+        return CitaResponse.from(citaService.reprogramar(id, req.inicio(), req.fin()));
     }
 
     @PatchMapping("/{id}/cancelar")
